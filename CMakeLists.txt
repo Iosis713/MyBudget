@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.28)
 project (MyBudget)
 
 set (FLAGS -Wall -Werror -Wextra -Wpedantic)
-set (CMAKE_CXX_COMPILER clang++)
+set (CMAKE_CXX_COMPILER clang++-18)
 set (CMAKE_CXX_EXTENSIONS OFF)
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)

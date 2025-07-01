@@ -1,5 +1,3 @@
-!#/bin/bash
-mkdir build
-cd build
-cmake -DCMAKE_PREFIX_PATH=$HOME/QT/6.7.3/gcc_64 ..
-make -j
+#!/bin/bash
+cmake -S . -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++-18 -DCMAKE_PREFIX_PATH="$HOME/QT/6.7.3/gcc_64"
+cmake --build build
