@@ -1,16 +1,18 @@
-#pragma once
+module;
 #include <cstdint>
 #include <fstream>
 #include <string>
 #include <unordered_map>
 
-struct Category
+export module Category;
+
+export struct Category
 {
     size_t id_;
     std::string name_;
 };
 
-class Categories
+export class Categories
 {
 private:
     std::unordered_map<size_t, Category> categories_;

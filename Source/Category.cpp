@@ -1,9 +1,11 @@
-#include "../Include/Category.hpp"
+module;
 #include <sstream>
+
+module Category;
 
 void Categories::AddCategory(const size_t id, const std::string& name)
 {
-    categories_.at(id) = {Category{id, name}};
+    categories_[id] = {Category{id, name}};
 }
 
 const Category& Categories::GetCategory(const size_t id) const
@@ -32,7 +34,7 @@ bool Categories::LoadFromFile(const std::string& filename)
             continue;
         category.name_ = token;
 
-        categories_.at(category.id_) = category;
+        categories_[category.id_] = category;
     }
 
     return true;
