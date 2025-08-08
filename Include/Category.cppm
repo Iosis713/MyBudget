@@ -1,6 +1,5 @@
 module;
 #include <cstdint>
-#include <fstream>
 #include <string>
 #include <unordered_map>
 
@@ -20,5 +19,10 @@ private:
 public:
     void AddCategory(const size_t id, const std::string& name);
     const Category& GetCategory(const size_t id) const;
-    bool LoadFromFile(const std::string& filename);
+    const std::unordered_map<size_t, Category>& GetCategories() const
+    {
+        return this->categories_;
+    }
+    void LoadFromFile(const std::string& filename);
+    void SaveToFile(const std::string filename) const;
 };

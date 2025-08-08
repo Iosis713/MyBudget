@@ -3,14 +3,18 @@ project (MyBudget LANGUAGES CXX)
 
 set (CMAKE_CXX_COMPILER clang++-18)
 set (CMAKE_CXX_EXTENSIONS OFF)
+set (FLAGS -Wall -Werror -Wextra -Wpedantic)
 
 #For modules
 set (CMAKE_CXX_SCAN_FOR_MODULES ON)
-
 set (CMAKE_CXX_COMPILER_CLANG_SCAN_DEPS "/usr/bin/clang-scan-deps-18")
-set (FLAGS -Wall -Werror -Wextra -Wpedantic)
 
-#Find Qt libraries
+#########################   GTEST   #########################
+set (GMOCK_LIBRARIES        /usr/lib/libgmock.a /usr/lib/libgmock_main.a)
+find_package(GTest REQUIRED)
+#########################   GTEST   #########################
+
+#########################   QT   #########################
 find_package(Qt6 COMPONENTS Widgets Core Gui REQUIRED)
 
 #Enable Qt automatic features (moc, uic, rcc)
@@ -19,8 +23,9 @@ set (CMAKE_AUTOMOC ON)
 set (CMAKE_AUTORCC ON)
 set (CMAKE_AUTOUIC ON)
 set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
+#########################   QT   #########################
 
-#MODULES
+#########################   MODULES   #########################
 set(ModuleInc     ${CMAKE_CURRENT_SOURCE_DIR}/Include/Category.cppm)
 set(ModuleSrc     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Category.cpp)
 
@@ -37,26 +42,36 @@ target_sources (${PROJECT_NAME}-lib
          PRIVATE
                 ${ModuleSrc}
 )
+#########################   MODULES   #########################
 
 add_executable (${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE   Qt6::Widgets Qt6::Core Qt6::Gui
-                                                ${PROJECT_NAME}-lib
-)
+add_executable (${PROJECT_NAME}-gt testRunner.cpp)
+
+target_link_libraries(${PROJECT_NAME}-gt  PRIVATE       ${GTEST_LIBRARIES}
+                                                        ${GMOCK_LIBRARIES}
+                                                        ${PROJECT_NAME}-lib
+                                                        )
+target_link_libraries(${PROJECT_NAME}     PRIVATE       Qt6::Widgets Qt6::Core Qt6::Gui
+                                                        ${PROJECT_NAME}-lib
+                                                        )
 
 target_compile_options (${PROJECT_NAME}-lib PRIVATE     ${FLAGS} -Og)
+target_compile_options (${PROJECT_NAME}-gt  PRIVATE     ${FLAGS} -Og)
 target_compile_options (${PROJECT_NAME}     PRIVATE     ${FLAGS} -Og)
 
-set_target_properties (${PROJECT_NAME}-lib PROPERTIES
-                                        CXX_STANDARD 20
-                                        CXX_STANDARD_REQUIRED ON)
+set_target_properties (${PROJECT_NAME}-lib       PROPERTIES
+                                                 CXX_STANDARD 20
+                                                 CXX_STANDARD_REQUIRED ON)
 
+set_target_properties (${PROJECT_NAME}-gt        PROPERTIES
+                                                 CXX_STANDARD 20
+                                                 CXX_STANDARD_REQUIRED ON)
 
-set_target_properties (${PROJECT_NAME}  PROPERTIES
-                                        CXX_STANDARD 20
-                                        CXX_STANDARD_REQUIRED ON
-                                        AUTOMOC ON
-                                        AUTOUIC ON
-                                        AUTORCC ON
-)
+set_target_properties (${PROJECT_NAME}           PROPERTIES
+                                                 CXX_STANDARD 20
+                                                 CXX_STANDARD_REQUIRED ON
+                                                 AUTOMOC ON
+                                                 AUTOUIC ON
+                                                 AUTORCC ON)
 
 set (CMAKE_VERBOSE_MAKEFILE ON)

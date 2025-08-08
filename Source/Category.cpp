@@ -1,4 +1,6 @@
 module;
+#include <format>
+#include <fstream>
 #include <sstream>
 
 module Category;
@@ -13,11 +15,13 @@ const Category& Categories::GetCategory(const size_t id) const
     return categories_.at(id);
 }
 
-bool Categories::LoadFromFile(const std::string& filename)
+void Categories::LoadFromFile(const std::string& filename)
 {
     std::ifstream file(filename);
     if (!file.is_open())
-        return false;
+        throw(std::runtime_error(std::format(
+            {"Invalid filename {}. Please check location of the file."},
+            filename)));
 
     std::string line;
     while (std::getline(file, line))
@@ -36,6 +40,16 @@ bool Categories::LoadFromFile(const std::string& filename)
 
         categories_[category.id_] = category;
     }
+}
 
-    return true;
+void Categories::SaveToFile(const std::string filename) const
+{
+    std::ofstream file(filename);
+    if (!file)
+        throw(std::runtime_error(std::format(
+            {"Failed to open file '{}'. Check path or permissions."},
+            filename)));
+
+    for (const auto& [id, category] : categories_)
+        file << id << ';' << category.name_ << '\n';
 }
