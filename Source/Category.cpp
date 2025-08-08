@@ -2,15 +2,21 @@ module;
 #include <format>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 
 module Category;
 
 void Categories::AddCategory(const size_t id, const std::string& name)
 {
-    categories_[id] = {Category{id, name}};
+    categories_[id] = name;
 }
 
-const Category& Categories::GetCategory(const size_t id) const
+const std::unordered_map<size_t, std::string>& Categories::GetCategories() const
+{
+    return this->categories_;
+}
+
+const std::string Categories::GetCategoryName(const size_t id) const
 {
     return categories_.at(id);
 }
@@ -27,18 +33,16 @@ void Categories::LoadFromFile(const std::string& filename)
     while (std::getline(file, line))
     {
         std::istringstream ss(line);
+        std::string id;
         std::string token;
-        Category category;
 
-        if (!std::getline(ss, token, ';'))
+        if (!std::getline(ss, id, ';'))
             continue;
-        category.id_ = static_cast<size_t>(std::stol(token));
 
         if (!std::getline(ss, token, '\n'))
             continue;
-        category.name_ = token;
 
-        categories_[category.id_] = category;
+        categories_[static_cast<size_t>(std::stol(id))] = token;
     }
 }
 
@@ -50,6 +54,6 @@ void Categories::SaveToFile(const std::string filename) const
             {"Failed to open file '{}'. Check path or permissions."},
             filename)));
 
-    for (const auto& [id, category] : categories_)
-        file << id << ';' << category.name_ << '\n';
+    for (const auto& [id, name] : categories_)
+        file << id << ';' << name << '\n';
 }

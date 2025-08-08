@@ -22,10 +22,9 @@ TEST_F(CategoriesFixture, SaveToLoadFromFileTest)
     targetCategories.LoadFromFile("testfile.csv");
 
     bool result = true;
-    for (const auto& [id, category] : categories.GetCategories())
+    for (const auto& [id, name] : categories.GetCategories())
     {
-        result &=
-            targetCategories.GetCategory(category.id_).name_ == category.name_;
+        result &= targetCategories.GetCategoryName(id) == name;
     }
 
     ASSERT_TRUE(result);
