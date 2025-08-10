@@ -1,7 +1,9 @@
 module;
 #include <format>
 #include <fstream>
+#include <ranges>
 #include <sstream>
+#include <string_view>
 #include <unordered_map>
 
 module Category;
@@ -56,4 +58,27 @@ void Categories::SaveToFile(const std::string filename) const
 
     for (const auto& [id, name] : categories_)
         file << id << ';' << name << '\n';
+}
+
+CategoriesMap::const_iterator Categories::Find(const size_t findValue) const
+{
+    const auto it = categories_.find(findValue);
+    if (it == categories_.end())
+        throw std::runtime_error(
+            std::format("No category found with key [{}]", findValue));
+
+    return it;
+}
+
+CategoriesMap::const_iterator Categories::Find(std::string_view findValue) const
+{
+    const auto it =
+        std::ranges::find_if(categories_, [&findValue](const auto& it)
+                             { return it.second == findValue; });
+
+    if (it == categories_.end())
+        throw std::runtime_error(
+            std::format("No category found with name [{}]", findValue));
+
+    return it;
 }
