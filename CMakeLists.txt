@@ -26,8 +26,12 @@ set (CMAKE_EXPORT_COMPILE_COMMANDS ON)
 #########################   QT   #########################
 
 #########################   MODULES   #########################
-set(ModuleInc     ${CMAKE_CURRENT_SOURCE_DIR}/Include/Category.cppm)
-set(ModuleSrc     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Category.cpp)
+set(ModuleInc        ${CMAKE_CURRENT_SOURCE_DIR}/Include/Category.cppm
+                     ${CMAKE_CURRENT_SOURCE_DIR}/Include/Transaction.cppm
+                     )
+
+set(ModuleSrc        ${CMAKE_CURRENT_SOURCE_DIR}/Source/Category.cpp
+                     ${CMAKE_CURRENT_SOURCE_DIR}/Source/Transaction.cpp)
 
 message(STATUS "ModuleInc = ${ModuleInc}")
 message(STATUS "ModuleSrc = ${ModuleSrc}")

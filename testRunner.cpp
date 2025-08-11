@@ -1,9 +1,11 @@
 #include <gmock/gmock.h>
 #include <gtest/gtest.h>
 
+#include <chrono>
 #include <filesystem>
 
 import Category;
+import Transaction;
 
 class CategoriesFixture : public testing::Test
 {
@@ -58,6 +60,56 @@ TEST_F(CategoriesFixture, FindByNamePositive)
 TEST_F(CategoriesFixture, FindByNameThrow)
 {
     ASSERT_THROW(categories.Find("NoName"), std::runtime_error);
+}
+
+////////////////////////////////////////////////////////////////
+
+using namespace std::chrono_literals;
+
+class TransactionFixture : public testing::Test
+{
+public:
+    Transaction transactionFixture{
+        std::chrono::year_month_day(2025y, std::chrono::August, 11d), 100.f,
+        "Description", 1};
+};
+
+TEST_F(TransactionFixture, ModifyDateTest)
+{
+    using namespace std::chrono;
+    const auto expectedDate =
+        std::chrono::year_month_day{2025y, std::chrono::August, 10d};
+
+    transactionFixture.ModifyDate(expectedDate);
+
+    ASSERT_EQ(transactionFixture.GetDate(), expectedDate);
+}
+
+TEST_F(TransactionFixture, ModifyValueTest)
+{
+    const float expectedValue = 90.f;
+
+    transactionFixture.ModifyValue(expectedValue);
+
+    ASSERT_EQ(transactionFixture.GetValue(), expectedValue);
+}
+
+TEST_F(TransactionFixture, ModifyDescriptionTest)
+{
+    const std::string expectedDescription = "NewDescription";
+
+    transactionFixture.ModifyDescription(expectedDescription);
+
+    ASSERT_EQ(transactionFixture.GetDescription(), expectedDescription);
+}
+
+TEST_F(TransactionFixture, ModifyCategoryIDTest)
+{
+    const size_t expectedID = 2;
+
+    transactionFixture.ModifyCategoryID(expectedID);
+
+    ASSERT_EQ(transactionFixture.GetCategoryID(), expectedID);
 }
 
 int main(int argc, char** argv)
